@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CV Berkawan Ponsel - Data Aksesori</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>CV Berkawan Ponsel</h1>
+    <nav>
+      <a href="index.html">Data Handphone</a>
+      <a href="accessories.html" class="active">Data Aksesori</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2>Tambah / Edit Data Aksesori</h2>
+      <form id="add-accessory-form">
+        <input type="text" id="accessory-name" placeholder="Nama Aksesori" required />
+        <input type="number" id="accessory-stock" placeholder="Stok" min="0" required />
+        <input type="number" id="accessory-sold" placeholder="Terjual" min="0" required />
+        <button type="submit">Tambah</button>
+      </form>
+    </section>
+
+    <section class="table-section">
+      <h2>Daftar Aksesori</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Stok</th>
+            <th>Terjual</th>
+            <th>Sisa</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="accessory-table-body"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="accessories.js"></script>
+</body>
+
+</html>
