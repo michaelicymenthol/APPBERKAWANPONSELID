@@ -1,82 +1,113 @@
-function logout() {
-  localStorage.removeItem("isLoggedIn");
-  window.location.href = "login.html";
-}
+const users = {
+  admin: { password: "admin123", role: "admin" },
+  user: { password: "user123", role: "user" }
+};
 
-const phones = [
-  { brand: "Oppo", stock: 50, sold: 45 },
-  { brand: "Vivo", stock: 50, sold: 35 },
-  { brand: "Samsung", stock: 35, sold: 20 },
-  { brand: "Realme", stock: 60, sold: 45 },
-  { brand: "Xiaomi", stock: 60, sold: 50 },
-  { brand: "Infinix", stock: 60, sold: 55 },
+let currentRole = null;
+
+let dataHP = [
+  { nama: "Oppo", stok: 50, terjual: 45 },
+  { nama: "Vivo", stok: 50, terjual: 35 },
+  { nama: "Samsung", stok: 35, terjual: 20 },
+  { nama: "Realme", stok: 60, terjual: 45 },
+  { nama: "Xiaomi", stok: 60, terjual: 50 },
+  { nama: "Infinix", stok: 60, terjual: 55 }
 ];
 
-const tableBody = document.getElementById("table-body");
-const form = document.getElementById("add-phone-form");
-const brandInput = document.getElementById("brand");
-const stockInput = document.getElementById("stock");
-const soldInput = document.getElementById("sold");
+let dataAksesoris = [
+  { nama: "Antigores", stok: 80, terjual: 60 },
+  { nama: "Earphone", stok: 40, terjual: 33 },
+  { nama: "Softcase", stok: 50, terjual: 20 },
+  { nama: "Headphone", stok: 20, terjual: 15 }
+];
 
-let editIndex = -1;
+function handleLogin() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  if (users[user] && users[user].password === pass) {
+    currentRole = users[user].role;
+    document.getElementById("login-page").style.display = "none";
+    document.getElementById("menu-page").style.display = "block";
 
-function renderTable() {
-  tableBody.innerHTML = "";
-  phones.forEach((phone, index) => {
-    const sisa = phone.stock - phone.sold;
-    const row = document.createElement("tr");
-    row.classList.add("fade-in");
-    row.innerHTML = `
-      <td>${phone.brand}</td>
-      <td>${phone.stock}</td>
-      <td>${phone.sold}</td>
-      <td>${sisa}</td>
-      <td>
-        <button onclick="editHP(${index})">Edit</button>
-        <button onclick="hapusHP(${index})" class="btn-hapus">Hapus</button>
-      </td>
-    `;
-    tableBody.appendChild(row);
-  });
-}
+    document.querySelectorAll(".admin-only").forEach(div => {
+      div.style.display = currentRole === "admin" ? "block" : "none";
+    });
 
-function hapusHP(index) {
-  if (confirm("Yakin ingin menghapus barang ini?")) {
-    phones.splice(index, 1);
-    renderTable();
-  }
-}
-
-function editHP(index) {
-  const phone = phones[index];
-  brandInput.value = phone.brand;
-  stockInput.value = phone.stock;
-  soldInput.value = phone.sold;
-  form.querySelector("button").textContent = "Simpan";
-  editIndex = index;
-}
-
-form.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const brand = brandInput.value.trim();
-  const stock = parseInt(stockInput.value);
-  const sold = parseInt(soldInput.value);
-
-  if (!brand || isNaN(stock) || isNaN(sold)) {
-    alert("Isi semua data dengan benar.");
-    return;
-  }
-
-  if (editIndex === -1) {
-    phones.push({ brand, stock, sold });
+    renderTabel();
   } else {
-    phones[editIndex] = { brand, stock, sold };
-    form.querySelector("button").textContent = "Tambah";
-    editIndex = -1;
+    alert("Login gagal!");
   }
+}
 
-  renderTable();
-  form.reset();
-});
+function logout() {
+  location.reload();
+}
 
-renderTable();
+function showPage(page) {
+  document.getElementById("menu-page").style.display = "none";
+  document.getElementById("hp-page").style.display = page === "hp" ? "block" : "none";
+  document.getElementById("aksesoris-page").style.display = page === "aksesoris" ? "block" : "none";
+  renderTabel();
+}
+
+function backToMenu() {
+  document.getElementById("hp-page").style.display = "none";
+  document.getElementById("aksesoris-page").style.display = "none";
+  document.getElementById("menu-page").style.display = "block";
+}
+
+function renderTabel() {
+  document.getElementById("tabel-hp").innerHTML = buatTabel(dataHP, "hp");
+  document.getElementById("tabel-aksesoris").innerHTML = buatTabel(dataAksesoris, "aksesoris");
+}
+
+function buatTabel(data, kategori) {
+  let html = `<tr><th>Nama</th><th>Stok</th><th>Terjual</th><th>Sisa</th>`;
+  if (currentRole === "admin") html += `<th>Aksi</th>`;
+  html += `</tr>`;
+
+  data.forEach((item, i) => {
+    html += `<tr>
+      <td>${item.nama}</td>
+      <td>${item.stok}</td>
+      <td>${item.terjual}</td>
+      <td>${item.stok - item.terjual}</td>`;
+    if (currentRole === "admin") {
+      html += `<td>
+        <button onclick="editBarang('${kategori}', ${i})">Edit</button>
+        <button onclick="hapusBarang('${kategori}', ${i})">Hapus</button>
+      </td>`;
+    }
+    html += `</tr>`;
+  });
+
+  return html;
+}
+
+function tambahBarang(kategori) {
+  const nama = document.getElementById(`nama-${kategori === "hp" ? "hp" : "aks"}`).value;
+  const stok = parseInt(document.getElementById(`stok-${kategori === "hp" ? "hp" : "aks"}`).value);
+  const terjual = parseInt(document.getElementById(`terjual-${kategori === "hp" ? "hp" : "aks"}`).value);
+  const data = kategori === "hp" ? dataHP : dataAksesoris;
+  data.push({ nama, stok, terjual });
+  renderTabel();
+
+  document.getElementById(`nama-${kategori === "hp" ? "hp" : "aks"}`).value = "";
+  document.getElementById(`stok-${kategori === "hp" ? "hp" : "aks"}`).value = "";
+  document.getElementById(`terjual-${kategori === "hp" ? "hp" : "aks"}`).value = "";
+}
+
+function hapusBarang(kategori, index) {
+  if (kategori === "hp") dataHP.splice(index, 1);
+  else dataAksesoris.splice(index, 1);
+  renderTabel();
+}
+
+function editBarang(kategori, index) {
+  const data = kategori === "hp" ? dataHP : dataAksesoris;
+  const nama = prompt("Nama baru:", data[index].nama);
+  const stok = prompt("Stok baru:", data[index].stok);
+  const terjual = prompt("Terjual:", data[index].terjual);
+  data[index] = { nama, stok: parseInt(stok), terjual: parseInt(terjual) };
+  renderTabel();
+}
