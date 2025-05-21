@@ -1,52 +1,58 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CV Berkawan Ponsel - Data Handphone</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CV Berkawan Ponsel</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
-
 <body>
   <header>
     <h1>CV Berkawan Ponsel</h1>
-    <nav>
-      <a href="index.html" class="active">Data Handphone</a>
-      <a href="accessories.html">Data Aksesori</a>
-      <button onclick="logout()">Logout</button>
-    </nav>
   </header>
 
-  <main>
-    <section class="form-section">
-      <h2>Tambah / Edit Data Handphone</h2>
-      <form id="add-phone-form">
-        <input type="text" id="brand" placeholder="Merek HP" required />
-        <input type="number" id="stock" placeholder="Stok" min="0" required />
-        <input type="number" id="sold" placeholder="Terjual" min="0" required />
-        <button type="submit">Tambah</button>
-      </form>
-    </section>
+  <main id="login-page" class="page">
+    <h2>Login ke CV Berkawan Ponsel</h2>
+    <input type="text" id="username" placeholder="Username"/>
+    <input type="password" id="password" placeholder="Password"/>
+    <button onclick="handleLogin()">Login</button>
+  </main>
 
-    <section class="table-section">
-      <h2>Daftar Handphone</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Merek</th>
-            <th>Stok</th>
-            <th>Terjual</th>
-            <th>Sisa</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
+  <main id="menu-page" class="page" style="display: none;">
+    <h2>Dashboard</h2>
+    <button onclick="logout()">Logout</button>
+    <nav>
+      <button onclick="showPage('hp')">Lihat Handphone</button>
+      <button onclick="showPage('aksesoris')">Lihat Aksesori</button>
+    </nav>
+  </main>
+
+  <main id="hp-page" class="page" style="display: none;">
+    <h2>Data Handphone</h2>
+    <button onclick="backToMenu()">Kembali</button>
+    <section class="admin-only">
+      <h3>Tambah Handphone</h3>
+      <input type="text" id="nama-hp" placeholder="Nama HP"/>
+      <input type="number" id="stok-hp" placeholder="Stok"/>
+      <input type="number" id="terjual-hp" placeholder="Terjual"/>
+      <button onclick="tambahBarang('hp')">Tambah</button>
     </section>
+    <table id="tabel-hp"></table>
+  </main>
+
+  <main id="aksesoris-page" class="page" style="display: none;">
+    <h2>Data Aksesori</h2>
+    <button onclick="backToMenu()">Kembali</button>
+    <section class="admin-only">
+      <h3>Tambah Aksesori</h3>
+      <input type="text" id="nama-aks" placeholder="Nama Aksesori"/>
+      <input type="number" id="stok-aks" placeholder="Stok"/>
+      <input type="number" id="terjual-aks" placeholder="Terjual"/>
+      <button onclick="tambahBarang('aksesoris')">Tambah</button>
+    </section>
+    <table id="tabel-aksesoris"></table>
   </main>
 
   <script src="app.js"></script>
 </body>
-
 </html>
